@@ -17,6 +17,8 @@ void main(int argc , char* argv){
     printf("%f\n" , norm_matrix(A,3,3));
     double** A_t = transpose(A,3,3);
     print_matrix(A_t,3,3);
+    double** A_d = calc_diagonal(A,3,3);
+    print_matrix(A_d,3,3);
 
     delete_matrix(A,3,3);
     delete_matrix(A_2,3,3);

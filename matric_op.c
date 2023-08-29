@@ -10,6 +10,7 @@ double** mul(double**,double**,int,int,int);
 double** sub_matrix(double** , double** , int ,int);
 double norm_matrix(double** , int ,int);
 double** transpose(double** ,int,int);
+double** calc_diagonal(double**,int,int);
 
 
 double** create_matrix(int n , int m){
@@ -82,4 +83,18 @@ double** transpose(double** mat ,int n ,int m){
     }
     return mat_t;
     
+}
+
+double** calc_diagonal(double** mat ,int n ,int m){
+    double** diagonal = create_matrix(n,m);
+    double temp;
+    for(int i = 0 ; i < n ; i++ ){
+        temp = 0.0;
+        for(int j = 0 ; j < m ; j++){
+            temp += mat[i][j];
+            diagonal[i][j] = 0.0;
+        }
+        diagonal[i][i] = temp;
+    }
+    return diagonal;
 }
