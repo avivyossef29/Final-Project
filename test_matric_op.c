@@ -12,6 +12,8 @@ void main(int argc , char* argv){
     print_matrix(A,3,3);
     double** A_2 = mul(A,A,3,3,3);
     print_matrix(A_2,3,3);
+    double** zero = sub_matrix(A,A,3,3);
+    print_matrix(zero,3,3);
     printf("%f\n" , norm_matrix(A,3,3));
     delete_matrix(A,3,3);
     delete_matrix(A_2,3,3);
