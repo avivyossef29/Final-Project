@@ -7,6 +7,7 @@ double** create_matrix(int,int);
 void print_matrix(double**,int,int);
 void delete_matrix(double**,int,int);
 double** mul(double**,double**,int,int,int);
+double** sub_matrix(double** , double** , int ,int);
 double norm_matrix(double** , int ,int);
 
 
@@ -49,6 +50,17 @@ double** mul(double** A,double** B , int n , int k , int m){
     }
     return C;
 }
+
+double** sub_matrix(double** A , double** B , int n ,int m){
+    double** C = create_matrix(n,m);
+    for(int i = 0 ; i < n ; i++){
+        for(int j = 0 ; j < m ; j++){
+            C[i][j] = A[i][j] - B[i][j];
+        }
+    }
+    return C;
+}
+
 
 double norm_matrix(double** mat , int n ,int m){
     double result = 0;
