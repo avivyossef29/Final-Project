@@ -15,6 +15,11 @@ void main(int argc , char* argv){
     double** zero = sub_matrix(A,A,3,3);
     print_matrix(zero,3,3);
     printf("%f\n" , norm_matrix(A,3,3));
+    double** A_t = transpose(A,3,3);
+    print_matrix(A_t,3,3);
+
     delete_matrix(A,3,3);
     delete_matrix(A_2,3,3);
+    delete_matrix(zero,3,3);
+    delete_matrix(A_t,0,0);
 }

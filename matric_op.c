@@ -9,6 +9,7 @@ void delete_matrix(double**,int,int);
 double** mul(double**,double**,int,int,int);
 double** sub_matrix(double** , double** , int ,int);
 double norm_matrix(double** , int ,int);
+double** transpose(double** ,int,int);
 
 
 double** create_matrix(int n , int m){
@@ -70,4 +71,15 @@ double norm_matrix(double** mat , int n ,int m){
         }
     }
     return sqrt(result);
+}
+
+double** transpose(double** mat ,int n ,int m){
+    double** mat_t = create_matrix(m,n);
+    for(int i = 0 ; i < n ; i++ ){
+        for(int j = 0 ; j < m ; j++){
+            mat_t[i][j] = mat[j][i];
+        }
+    }
+    return mat_t;
+    
 }
