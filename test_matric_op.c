@@ -1,8 +1,7 @@
-
 #include "matric_op.c"
 
 
-void main(int argc , char* argv){
+int main(int argc, char* argv[]) {
     double** A = create_matrix(3,3);
     for(int i = 0 ; i < 3 ; i++){
         for(int j = 0; j<3; j++){
@@ -24,8 +23,10 @@ void main(int argc , char* argv){
     double** A_n_sym = calc_normal_similarity_matrix(A,3);
     print_matrix(A_n_sym,3,3);
 
-    delete_matrix(A,3,3);
-    delete_matrix(A_2,3,3);
-    delete_matrix(zero,3,3);
-    delete_matrix(A_t,0,0);
+    delete_matrix(A);
+    delete_matrix(A_2);
+    delete_matrix(zero);
+    delete_matrix(A_t);
+
+    return 0;
 }
