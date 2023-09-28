@@ -32,13 +32,13 @@ def main():
     goal = sys.argv[2]
     file_path = sys.argv[3]
     matrix = process_txt(file_path)
-    print_matrix(matrix)
+    #print_matrix(matrix)
     if goal == "symnmf":
         # this method should receive W and initial H as arguments and return the final H
         symnmf()  # this method should be defined in a C file
     elif goal == "sym":
         # this method should receive the data points matrix and return the similarity matrix
-        sym()  # this method should be defined in a C file
+        sym(matrix, len(metrix), len(matrix[0]))  # this method should be defined in a C file
     elif goal == "ddg":
         # this method should receive the data points matrix and return the diagonal matrix D
         ddg()  # this method should be defined in a C file

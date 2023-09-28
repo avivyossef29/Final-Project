@@ -6,6 +6,13 @@
 #include "matric_op.c"
 #include "symnmf.c"
 
+/* symnmf wrapper */
+static PyObject *sym(PyObject *self, PyObject *args) {
+    /*
+     * COMPLETE THE MISSING CODE
+     * */
+}
+
 /* sym wrapper */
 static PyObject *sym(PyObject *self, PyObject *args) {
     PyObject *mat;
@@ -127,4 +134,29 @@ static PyObject *sym(PyObject *self, PyObject *args) {
     delete_matrix(c_mat);
     delete_matrix(norm_mat);
     return res;
+}
+
+static PyMethodDef symnmfMethods[] = {{"symnmf", (PyCFunction) symnmf, METH_VARARGS, PyDoc_STR("Performs the symNMF algorithm and returns the optimized H. The function expects: initialized H, initialized W, ... COMPLETE")},
+                                      {"sym", (PyCFunction) sym, METH_VARARGS, PyDoc_STR("Calculates and returns the similarity matrix. The function expects: vectors matrix or size n x m, int n, int m")},
+                                      {"ddg", (PyCFunction) ddg, METH_VARARGS, PyDoc_STR("Calculates and returns the diagonal matrix. The function expects: vectors matrix or size n x m, int n, int m")},
+                                      {"norm", (PyCFunction) norm, METH_VARARGS, PyDoc_STR("Calculates and returns the normalized similarity matrix. The function expects: vectors matrix or size n x m, int n, int m")},
+                                      {NULL,NULL,0,NULL}
+};
+
+static struct PyModuleDef symnmfmodule = {
+        PyModuleDef_HEAD_INIT,
+        "symnmfapi", /* name of module */
+        NULL, /* module documentation, may be NULL */
+        -1,  /* size of per-interpreter state of the module, or -1 if the module keeps state in global variables. */
+        symnmfMethods /* the PyMethodDef array from before containing the methods of the extension */
+};
+
+PyMODINIT_FUNC PyInit_symnmfapi(void)
+{
+    PyObject *m;
+    m = PyModule_Create(&symnmfmodule);
+    if (!m) {
+        Py_RETURN_NONE;
+    }
+    return m;
 }
