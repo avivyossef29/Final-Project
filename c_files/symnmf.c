@@ -80,22 +80,16 @@ double** process_txt(const char *file_path, int v_num, int v_size) {
     return matrix;
 }
 
-void sym(double **matrix, int v_num, int v_size) {
-    double **res_mat;
-    res_mat = calc_similarity(matrix, v_num, v_size);
-    print_matrix(res_mat, v_num, v_num);
+double** sym(double **matrix, int v_num, int v_size) {
+    return calc_similarity(matrix, v_num, v_size);
 }
 
-void ddg(double **matrix, int v_num, int v_size) {
-    double **res_mat;
-    res_mat = calc_diagonal(matrix, v_num, v_size);
-    print_matrix(res_mat, v_num, v_num);
+double** ddg(double **matrix, int v_num, int v_size) {
+    return calc_diagonal(matrix, v_num, v_size);
 }
 
-void norm(double **matrix, int v_num, int v_size) {
-    double **res_mat;
-    res_mat = calc_normal_similarity_matrix(matrix, v_num, v_size);
-    print_matrix(res_mat, v_num, v_num);
+double** norm(double **matrix, int v_num, int v_size) {
+    return calc_normal_similarity_matrix(matrix, v_num, v_size);
 }
 
 int main(int argc, char *argv[]) {
@@ -104,17 +98,19 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     char *file_path = argv[2]; /* file path is provided right after the goal */
+    double **res_mat;
     vectors_num = calc_vectors_num(file_path);
     vector_size = calc_vector_size(file_path);
     double **matrix = process_txt(file_path, vectors_num, vector_size);
     if (strcmp(argv[1], "sym") == 0) {
-        sym(matrix, vectors_num, vector_size);
+        res_mat = sym(matrix, vectors_num, vector_size);
     } else if (strcmp(argv[1], "ddg") == 0) {
-        ddg(matrix, vectors_num, vector_size);
+        res_mat = ddg(matrix, vectors_num, vector_size);
     } else if (strcmp(argv[1], "norm") == 0) {
-        norm(matrix, vectors_num, vector_size);
+        res_mat = norm(matrix, vectors_num, vector_size);
     } else { /* the given goal has to be one of the 3 defined goals */
             printf("ֿ\nAn Error Has Occurred\n");
             exit(1);
     }
+    print_matrix(res_mat, vectors_num, vectors_num);
 }
