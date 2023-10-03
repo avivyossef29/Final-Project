@@ -2,6 +2,21 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "symnmf.h"
+
+/*
+double** symnmf(double** W , double** H, int n, int k, int max_iter, double eps);
+int calc_vectors_num(const char *file_path);
+int calc_vector_size(const char *file_path);
+double** process_txt(const char *file_path, int v_num, int v_size);
+double** sym(double **matrix, int v_num, int v_size);
+double** ddg(double **matrix, int v_num, int v_size);
+double** norm(double **matrix, int v_num, int v_size);
+double** symnmf(double** W , double** H, int n, int k, int max_iter, double eps);
+*/
+
+
+
 int vectors_num, vector_size; /* vectors_num is the number of vectors and K is the dimension of each vector */
 
 struct Node {
@@ -90,6 +105,11 @@ double** ddg(double **matrix, int v_num, int v_size) {
 
 double** norm(double **matrix, int v_num, int v_size) {
     return calc_normal_similarity_matrix(matrix, v_num, v_size);
+}
+
+double** symnmf(double** W , double** H, int n, int k, int max_iter, double eps){
+    optimize_h( W,  H,  n,  k , max_iter , eps);
+    return H;
 }
 
 int main(int argc, char *argv[]) {

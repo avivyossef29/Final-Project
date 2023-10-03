@@ -6,11 +6,60 @@
 #include "matric_op.c"
 #include "symnmf.c"
 
+
+double **py_to_c(Pyobject* old_py , int n , int m){
+    double ** c_mat;
+    c_mat = create_matrix(n,m);
+    if (c_mat == NULL) return NULL;
+    PyObject *curr_v;
+    int i, j;
+    for (i = 0; i < n; i++) {
+        curr_v = PyList_GetItem(mat, i);
+        for (j = 0; j < v_size; j++) {
+            c_mat[i][j] = PyFloat_AsDouble(PyList_GetItem(curr_v, j));
+        }
+    }
+    return c_mat;
+}
+
+Pyobject* c_to_py(double** old_c , int n , int m){
+    PyObject *res;
+    new_py = PyList_New(n);
+    for (i = 0; i < n; i++) {
+        curr_v = PyList_New(m);
+        for (j = 0; j < m; j++) {
+            PyList_SetItem(curr_v, j, Py_BuildValue("d", old_c[i][j]));
+        }
+        PyList_SetItem(res, i, curr_v);
+    }
+    return new_py;
+
+}
+
 /* symnmf wrapper */
-static PyObject *sym(PyObject *self, PyObject *args) {
-    /*
-     * COMPLETE THE MISSING CODE
-     * */
+static PyObject *symnmf(PyObject *self, PyObject *args) {
+    PyObject *H;
+    PyObject *W;
+    int n; 
+    int k;
+    int max_iter;
+    int eps
+
+    /* This parses the Python arguments into C arguments */
+    if (!PyArg_ParseTuple(args, "OOiiii", &W,&H &n, &k,&max_iter,&eps)) {
+        return NULL; /* In the CPython API, a NULL value is never valid for a
+                        PyObject* so it is used to signal that an error has occurred. */
+    }
+    /* create a new H_c matrix */
+    double ** H_c_mat = py_to_c(H,n,k);
+    if (H_c_mat == NULL) return NULL;
+    double ** W_c_mat = py_to_c(W,n,n);
+    if (W_c_mat == NULL) return NULL;
+    symnmf(W_c , H_c , int n, int k, int max_iter, double eps);
+    PyObject* result = c_to_py(H_c,n,k)
+    delete_matrix(H_c);
+    delete_matrix(W_c);
+    return result;
 }
 
 /* sym wrapper */
@@ -55,7 +104,7 @@ static PyObject *sym(PyObject *self, PyObject *args) {
 }
 
 /* ddg wrapper */
-static PyObject *sym(PyObject *self, PyObject *args) {
+static PyObject *ddg(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -77,7 +126,7 @@ static PyObject *sym(PyObject *self, PyObject *args) {
             c_mat[i][j] = PyFloat_AsDouble(PyList_GetItem(curr_v, j));
         }
     }
-    /* calculate the similarity matrix */
+    /* calculate the ddg matrix */
     double **ddg_mat;
     ddg_mat = ddg(c_mat, v_num, v_size);
     /* This parses the C arguments into Python arguments */
@@ -96,7 +145,7 @@ static PyObject *sym(PyObject *self, PyObject *args) {
 }
 
 /* norm wrapper */
-static PyObject *sym(PyObject *self, PyObject *args) {
+static PyObject *norm(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -120,7 +169,9 @@ static PyObject *sym(PyObject *self, PyObject *args) {
     }
     /* calculate the similarity matrix */
     double **norm_mat;
-    norm_mat = sym(c_mat, v_num, v_size);
+
+    norm_mat = norm(c_mat, v_num, v_size);  //* wtf
+
     /* This parses the C arguments into Python arguments */
     PyObject *res;
     res = PyList_New(v_num);

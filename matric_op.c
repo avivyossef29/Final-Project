@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "symnmf.h"
 
-
+/*
 double **create_matrix(int, int);
 
 double *create_vector(int);
@@ -29,6 +30,10 @@ double **calc_similarity(double **, int, int);
 
 double **calc_normal_similarity_matrix(double **, int, int);
 
+double **duplicate_matrix(double **A, int n, int m);
+*/
+
+
 /*
 if u create a matrix or vector u should check it isn't NULL
 I didn't test calc_similarity
@@ -36,10 +41,11 @@ I didn't test calc_similarity
 
 
 double **create_matrix(int n, int m) {
+    int i = 0 ;
     double *temp = (double *) malloc(n * m * sizeof(double));
     double **mat = (double **) malloc(n * sizeof(double *));
     if ((mat == NULL) || (temp == NULL)) return NULL;
-    for (int i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         mat[i] = temp + m * i;
     }
     return mat;
