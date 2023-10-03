@@ -1,9 +1,10 @@
 import sys
-
-import init_H
+import symnmfapi
 import numpy as np
 
 EROR = 'eror'
+EPSILON  = 0.0001
+MAX_ITER = 300
 
 
 # import symnmfmodule
@@ -52,25 +53,27 @@ def init_H(W, n, k):
 
 def main():
     assert (len(sys.argv) == 4)
-    K = sys.argv[1]  # K is the number of clusters
+    k = int(sys.argv[1])  # K is the number of clusters
     goal = sys.argv[2]
     file_path = sys.argv[3]
     matrix = process_txt(file_path)
+    vector_num = len(metrix)
+    vector_size = len(matrix[0])
     #print_matrix(matrix)
     if goal == "symnmf":
         # this method should receive W and initial H as arguments and return the final H
-        W = norm()
-        
-        result = symnmf()  # this method should be defined in a C file
+        W = symnmfapi.norm_py(matrix, vector_num, vector_size)
+        H = init_H(W,vector_num,k)
+        result = symnmfapi.symnmf_py(W,H,n,k,)  # this method should be defined in a C file
     elif goal == "sym":
         # this method should receive the data points matrix and return the similarity matrix
-        result = sym(matrix, len(metrix), len(matrix[0]))  # this method should be defined in a C file
+        result = symnmfapi.sym_py(matrix, vector_num, vector_size)  # this method should be defined in a C file
     elif goal == "ddg":
         # this method should receive the data points matrix and return the diagonal matrix D
-        result = ddg()  # this method should be defined in a C file
+        result = symnmfapi.ddg_py(matrix, vector_num, vector_size) # this method should be defined in a C file
     elif goal == "norm":
         # this method should receive the data points matrix and return the normalized similarity matrix
-        result = norm()  # this method should be defined in a C file
+        result = symnmfapi.norm_py(matrix, vector_num, vector_size)  # this method should be defined in a C file
     else:
         result = None
     

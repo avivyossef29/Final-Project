@@ -3,67 +3,74 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
-#include "matric_op.c"
-#include "symnmf.c"
+#include "symnmf.h"
 
 
-double **py_to_c(Pyobject* old_py , int n , int m){
+double **py_to_c(PyObject* old_py , int n , int m){
     double ** c_mat;
     c_mat = create_matrix(n,m);
     if (c_mat == NULL) return NULL;
     PyObject *curr_v;
     int i, j;
     for (i = 0; i < n; i++) {
-        curr_v = PyList_GetItem(mat, i);
-        for (j = 0; j < v_size; j++) {
+        curr_v = PyList_GetItem(old_py, i);
+        for (j = 0; j < m; j++) {
             c_mat[i][j] = PyFloat_AsDouble(PyList_GetItem(curr_v, j));
         }
     }
     return c_mat;
 }
 
-Pyobject* c_to_py(double** old_c , int n , int m){
-    PyObject *res;
-    new_py = PyList_New(n);
+PyObject* c_to_py(double** old_c , int n , int m){
+    PyObject *curr_v;
+    PyObject *new_py = PyList_New(n);
+    int i;
+    int j;
+
     for (i = 0; i < n; i++) {
         curr_v = PyList_New(m);
         for (j = 0; j < m; j++) {
             PyList_SetItem(curr_v, j, Py_BuildValue("d", old_c[i][j]));
         }
-        PyList_SetItem(res, i, curr_v);
+        PyList_SetItem(new_py, i, curr_v);
     }
     return new_py;
 
 }
 
 /* symnmf wrapper */
-static PyObject *symnmf(PyObject *self, PyObject *args) {
+
+static PyObject* symnmf_py(PyObject *self, PyObject *args) {
     PyObject *H;
     PyObject *W;
     int n; 
     int k;
     int max_iter;
-    int eps
+    double eps;
+    double ** H_c_mat;
+    double ** W_c_mat;
+    PyObject* result;
+
 
     /* This parses the Python arguments into C arguments */
-    if (!PyArg_ParseTuple(args, "OOiiii", &W,&H &n, &k,&max_iter,&eps)) {
+    if (!PyArg_ParseTuple(args, "OOiiid", &W,&H ,&n, &k,&max_iter,&eps)) {
         return NULL; /* In the CPython API, a NULL value is never valid for a
                         PyObject* so it is used to signal that an error has occurred. */
     }
     /* create a new H_c matrix */
-    double ** H_c_mat = py_to_c(H,n,k);
+    H_c_mat = py_to_c(H,n,k);
     if (H_c_mat == NULL) return NULL;
-    double ** W_c_mat = py_to_c(W,n,n);
+    W_c_mat = py_to_c(W,n,n);
     if (W_c_mat == NULL) return NULL;
-    symnmf(W_c , H_c , int n, int k, int max_iter, double eps);
-    PyObject* result = c_to_py(H_c,n,k)
-    delete_matrix(H_c);
-    delete_matrix(W_c);
+    symnmf(W_c_mat , H_c_mat ,  n, k, max_iter, eps);
+    result = c_to_py(H_c_mat,n,k);
+    delete_matrix(H_c_mat);
+    delete_matrix(W_c_mat);
     return result;
 }
 
 /* sym wrapper */
-static PyObject *sym(PyObject *self, PyObject *args) {
+static PyObject *sym_py(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -92,8 +99,8 @@ static PyObject *sym(PyObject *self, PyObject *args) {
     PyObject *res;
     res = PyList_New(v_num);
     for (i = 0; i < v_num; i++) {
-        curr_v = PyList_New(vec_num);
-        for (j = 0; j < vec_num; j++) {
+        curr_v = PyList_New(v_num);
+        for (j = 0; j < v_size; j++) {
             PyList_SetItem(curr_v, j, Py_BuildValue("d", sym_mat[i][j]));
         }
         PyList_SetItem(res, i, curr_v);
@@ -104,7 +111,7 @@ static PyObject *sym(PyObject *self, PyObject *args) {
 }
 
 /* ddg wrapper */
-static PyObject *ddg(PyObject *self, PyObject *args) {
+static PyObject *ddg_py(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -133,8 +140,8 @@ static PyObject *ddg(PyObject *self, PyObject *args) {
     PyObject *res;
     res = PyList_New(v_num);
     for (i = 0; i < v_num; i++) {
-        curr_v = PyList_New(vec_num);
-        for (j = 0; j < vec_num; j++) {
+        curr_v = PyList_New(v_num);
+        for (j = 0; j < v_size; j++) {
             PyList_SetItem(curr_v, j, Py_BuildValue("d", ddg_mat[i][j]));
         }
         PyList_SetItem(res, i, curr_v);
@@ -145,7 +152,7 @@ static PyObject *ddg(PyObject *self, PyObject *args) {
 }
 
 /* norm wrapper */
-static PyObject *norm(PyObject *self, PyObject *args) {
+static PyObject *norm_py(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -176,8 +183,8 @@ static PyObject *norm(PyObject *self, PyObject *args) {
     PyObject *res;
     res = PyList_New(v_num);
     for (i = 0; i < v_num; i++) {
-        curr_v = PyList_New(vec_num);
-        for (j = 0; j < vec_num; j++) {
+        curr_v = PyList_New(v_num);
+        for (j = 0; j < v_size; j++) {
             PyList_SetItem(curr_v, j, Py_BuildValue("d", norm_mat[i][j]));
         }
         PyList_SetItem(res, i, curr_v);
