@@ -1,4 +1,5 @@
 #include "symnmf.h"
+
 /* include "matric_op.c" 
  update H_i i,j  to H_i+1 i,j */
 

@@ -41,7 +41,7 @@ I didn't test calc_similarity
 
 
 double **create_matrix(int n, int m) {
-    int i = 0 ;
+    int i;
     double *temp = (double *) malloc(n * m * sizeof(double));
     double **mat = (double **) malloc(n * sizeof(double *));
     if ((mat == NULL) || (temp == NULL)) return NULL;
@@ -57,8 +57,10 @@ double *create_vector(int n) {
 }
 
 void print_matrix(double **mat, int n, int m) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
+    int i;
+    int j;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
             if (j == m - 1) printf("%.4f\n", mat[i][j]);
             else printf("%.4f,", mat[i][j]);
         }
@@ -72,14 +74,17 @@ void delete_matrix(double **mat) {
 
  /* A is n*k and B is k*m */
 double **mul(double **A, double **B, int n, int k, int m) {
+    int i;
+    int j;
+    int cnt;
     double temp;
     double **C = create_matrix(n, m);
     if (!C) return NULL;
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
             temp = 0.0;
-            for (int cnt = 0; cnt < k; cnt++) {
+            for (cnt = 0; cnt < k; cnt++) {
                 temp += (A[i][cnt] * B[cnt][j]);
             }
             C[i][j] = temp;
@@ -89,10 +94,12 @@ double **mul(double **A, double **B, int n, int k, int m) {
 }
 
 double **sub_matrix(double **A, double **B, int n, int m) {
+    int i;
+    int j;
     double **C = create_matrix(n, m);
     if (!C) return NULL;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
             C[i][j] = A[i][j] - B[i][j];
         }
     }
@@ -100,9 +107,10 @@ double **sub_matrix(double **A, double **B, int n, int m) {
 }
 
 double *sub_vector(const double *v, const double *w, int n) {
+    int i;
     double *sub = create_vector(n);
     if (!sub) return NULL;
-    for (int i = 0; i < n; i++) {
+    for (i = 0; i < n; i++) {
         sub[i] = v[i] - w[i];
     }
     return sub;
@@ -110,9 +118,11 @@ double *sub_vector(const double *v, const double *w, int n) {
 
 
 double norm_matrix(double **mat, int n, int m) {
+    int i;
+    int j;
     double result = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
             result += pow(mat[i][j], 2);
         }
     }
@@ -121,18 +131,21 @@ double norm_matrix(double **mat, int n, int m) {
 
 double norm_vector(double *v, int n) {
     double result = 0;
-    for (int i = 0; i < n; i++) {
+    int i;
+    for (i = 0; i < n; i++) {
         result += pow(v[i], 2);
     }
     return sqrt(result);
 }
 
 double **transpose(double **mat, int n, int m) {
+    int i;
+    int j;
     double **mat_t = create_matrix(m, n);
     if (!mat_t) return NULL;
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < m; j++) {
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
             mat_t[i][j] = mat[j][i];
         }
     }
@@ -143,11 +156,14 @@ double **transpose(double **mat, int n, int m) {
 double **calc_diagonal(double **mat, int n, int m) {
     double **sym = calc_similarity(mat, n, m);
     double **diagonal = create_matrix(n, n);
-    if (!diagonal) return NULL;
+    int i;
+    int j;
     double temp;
-    for (int i = 0; i < n; i++) {
+
+    if (!diagonal) return NULL;
+    for (i = 0; i < n; i++) {
         temp = 0.0;
-        for (int j = 0; j < n; j++) {
+        for (j = 0; j < n; j++) {
             temp += sym[i][j];
             diagonal[i][j] = 0.0;
         }
@@ -160,11 +176,14 @@ double **calc_diagonal(double **mat, int n, int m) {
 
 /* each vector x_i should be a row of mat */
 double **calc_similarity(double **mat, int n, int m) {
-    double **similarity = create_matrix(n, n);
-    if (!similarity) return NULL;
+    int i;
+    int j;
     double *x_i_sub_x_j;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
+    double **similarity = create_matrix(n, n);
+
+    if (!similarity) return NULL;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
             if (i == j) {
                 similarity[i][j] = 0.0;
             } else {
@@ -182,8 +201,10 @@ double **calc_similarity(double **mat, int n, int m) {
 
 /* in place */
 void opposite_diagonal(double **mat, int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
+    int i;
+    int j;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
             if (i == j) {
                 mat[i][j] = 1 / mat[i][j];
             } else {
@@ -193,10 +214,12 @@ void opposite_diagonal(double **mat, int n) {
     }
 }
 
-// in place
+/* in place */
 void **root_diagonal(double **mat, int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
+    int i;
+    int j;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
             mat[i][j] = sqrt(mat[i][j]);
         }
     }
@@ -206,15 +229,19 @@ void **root_diagonal(double **mat, int n) {
 
 double **calc_normal_similarity_matrix(double **mat, int n, int m) {
     double **D = calc_diagonal(mat, n, m);
+    double **A;
+    double **temp;
+     double **W;
+
     if (!D) return NULL;
     opposite_diagonal(D, n);
     root_diagonal(D, n);
-    double **A = calc_similarity(mat, n, m);
+    A = calc_similarity(mat, n, m);
     if (!A) return NULL;
     /* create temp to free later */
-    double **temp = mul(D, A, n, n, n);
+    temp = mul(D, A, n, n, n);
     if (!temp) return NULL;
-    double **W = mul(temp, D, n, n, n);
+    W = mul(temp, D, n, n, n);
     delete_matrix(temp);
     delete_matrix(D);
     delete_matrix(A);

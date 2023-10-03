@@ -1,9 +1,7 @@
-#include "matric_op.c"
+#include "symnmf.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "symnmf.h"
-
 /*
 double** symnmf(double** W , double** H, int n, int k, int max_iter, double eps);
 int calc_vectors_num(const char *file_path);
@@ -38,14 +36,17 @@ Node *creat_node(double val) {
 }
 
 int calc_vectors_num(const char *file_path) {
+
+    int n = 0;
+    char ch;
+
     FILE *file = fopen(file_path, "r");
     if (file == NULL) {
         printf("ֿ\nAn Error Has Occurred\n");
         exit(1);
     }
     /* Count the number of lines in the file (vectors_num) */
-    int n = 0;
-    char ch;
+    
     while (!feof(file)) {
         ch = fgetc(file);
         if (ch == '\n') n++;
@@ -55,14 +56,16 @@ int calc_vectors_num(const char *file_path) {
 }
 
 int calc_vector_size(const char *file_path) {
+    int k = 1;
+    char ch;
+
     FILE *file = fopen(file_path, "r");
     if(file == NULL) {
         printf("ֿ\nAn Error Has Occurred\n");
         exit(1);
     }
     /* Calculate the size of each vector(K) */
-    int k = 1;
-    char ch;
+    
     while (!feof(file)) {
         ch = fgetc(file);
         if (ch == ',') k++;
@@ -73,17 +76,21 @@ int calc_vector_size(const char *file_path) {
 }
 
 double** process_txt(const char *file_path, int v_num, int v_size) {
+
+    int i, j;
+    double **matrix;
+
     FILE *file = fopen(file_path, "r");
     if(file == NULL) {
         printf("ֿ\nAn Error Has Occurred\n");
         exit(1);
     }
-    double **matrix = create_matrix(v_num, v_size);
+    matrix = create_matrix(v_num, v_size);
     if(matrix == NULL) {
         printf("ֿ\nAn Error Has Occurred\n");
         exit(1);
     }
-    int i, j;
+    
     for (i = 0; i < v_num; i++) {
         for (j = 0; j < v_size; j++) {
             /* For the last value in a row, use fscanf with newline as the separator */
@@ -113,15 +120,18 @@ double** symnmf(double** W , double** H, int n, int k, int max_iter, double eps)
 }
 
 int main(int argc, char *argv[]) {
+     char *file_path;
+     double **res_mat;
+     double **matrix;
+
     if (argc != 3) { /* we should receive file_path and a goal */
         printf("ֿ\nAn Error Has Occurred\n");
         exit(1);
     }
-    char *file_path = argv[2]; /* file path is provided right after the goal */
-    double **res_mat;
+    file_path = argv[2]; /* file path is provided right after the goal */
     vectors_num = calc_vectors_num(file_path);
     vector_size = calc_vector_size(file_path);
-    double **matrix = process_txt(file_path, vectors_num, vector_size);
+    matrix = process_txt(file_path, vectors_num, vector_size);
     if (strcmp(argv[1], "sym") == 0) {
         res_mat = sym(matrix, vectors_num, vector_size);
     } else if (strcmp(argv[1], "ddg") == 0) {
@@ -133,4 +143,5 @@ int main(int argc, char *argv[]) {
             exit(1);
     }
     print_matrix(res_mat, vectors_num, vectors_num);
-}
+    return 0;
+    }
