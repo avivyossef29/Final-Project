@@ -144,8 +144,8 @@ double **transpose(double **mat, int n, int m) {
     double **mat_t = create_matrix(m, n);
     if (!mat_t) return NULL;
 
-    for (i = 0; i < n; i++) {
-        for (j = 0; j < m; j++) {
+    for (i = 0; i < m; i++) {
+        for (j = 0; j < n; j++) {
             mat_t[i][j] = mat[j][i];
         }
     }
@@ -258,4 +258,13 @@ double **duplicate_matrix(double **A, int n, int m) {
         }
     }
     return copy;
+}
+
+void copy_matrix(double** copy_from,double** copy_to ,int n, int m) {
+    int i, j;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            copy_to[i][j] = copy_from[i][j];
+        }
+    }
 }

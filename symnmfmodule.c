@@ -40,7 +40,7 @@ PyObject* c_to_py(double** old_c , int n , int m){
 
 /* symnmf wrapper */
 
-static PyObject* symnmf_py(PyObject *self, PyObject *args) {
+static PyObject* symnmf(PyObject *self, PyObject *args) {
     PyObject *H;
     PyObject *W;
     int n; 
@@ -62,7 +62,7 @@ static PyObject* symnmf_py(PyObject *self, PyObject *args) {
     if (H_c_mat == NULL) return NULL;
     W_c_mat = py_to_c(W,n,n);
     if (W_c_mat == NULL) return NULL;
-    symnmf(W_c_mat , H_c_mat ,  n, k, max_iter, eps);
+    symnmf_c(W_c_mat , H_c_mat ,  n, k, max_iter, eps);
     result = c_to_py(H_c_mat,n,k);
     delete_matrix(H_c_mat);
     delete_matrix(W_c_mat);
@@ -70,7 +70,7 @@ static PyObject* symnmf_py(PyObject *self, PyObject *args) {
 }
 
 /* sym wrapper */
-static PyObject *sym_py(PyObject *self, PyObject *args) {
+static PyObject *sym(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -94,13 +94,13 @@ static PyObject *sym_py(PyObject *self, PyObject *args) {
     }
     /* calculate the similarity matrix */
     double **sym_mat;
-    sym_mat = sym(c_mat, v_num, v_size);
+    sym_mat = sym_c(c_mat, v_num, v_size);
     /* This parses the C arguments into Python arguments */
     PyObject *res;
     res = PyList_New(v_num);
     for (i = 0; i < v_num; i++) {
         curr_v = PyList_New(v_num);
-        for (j = 0; j < v_size; j++) {
+        for (j = 0; j < v_num; j++) {
             PyList_SetItem(curr_v, j, Py_BuildValue("d", sym_mat[i][j]));
         }
         PyList_SetItem(res, i, curr_v);
@@ -111,7 +111,7 @@ static PyObject *sym_py(PyObject *self, PyObject *args) {
 }
 
 /* ddg wrapper */
-static PyObject *ddg_py(PyObject *self, PyObject *args) {
+static PyObject *ddg(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -135,13 +135,13 @@ static PyObject *ddg_py(PyObject *self, PyObject *args) {
     }
     /* calculate the ddg matrix */
     double **ddg_mat;
-    ddg_mat = ddg(c_mat, v_num, v_size);
+    ddg_mat = ddg_c(c_mat, v_num, v_size);
     /* This parses the C arguments into Python arguments */
     PyObject *res;
     res = PyList_New(v_num);
     for (i = 0; i < v_num; i++) {
         curr_v = PyList_New(v_num);
-        for (j = 0; j < v_size; j++) {
+        for (j = 0; j < v_num; j++) {
             PyList_SetItem(curr_v, j, Py_BuildValue("d", ddg_mat[i][j]));
         }
         PyList_SetItem(res, i, curr_v);
@@ -152,7 +152,7 @@ static PyObject *ddg_py(PyObject *self, PyObject *args) {
 }
 
 /* norm wrapper */
-static PyObject *norm_py(PyObject *self, PyObject *args) {
+static PyObject *norm(PyObject *self, PyObject *args) {
     PyObject *mat;
     int v_num;
     int v_size;
@@ -177,14 +177,14 @@ static PyObject *norm_py(PyObject *self, PyObject *args) {
     /* calculate the similarity matrix */
     double **norm_mat;
 
-    norm_mat = norm(c_mat, v_num, v_size);  //* wtf
+    norm_mat = norm_c(c_mat, v_num, v_size);  //* wtf
 
     /* This parses the C arguments into Python arguments */
     PyObject *res;
     res = PyList_New(v_num);
     for (i = 0; i < v_num; i++) {
         curr_v = PyList_New(v_num);
-        for (j = 0; j < v_size; j++) {
+        for (j = 0; j < v_num; j++) {
             PyList_SetItem(curr_v, j, Py_BuildValue("d", norm_mat[i][j]));
         }
         PyList_SetItem(res, i, curr_v);

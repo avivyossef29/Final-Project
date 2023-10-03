@@ -1,6 +1,7 @@
 import sys
 import symnmfapi
 import numpy as np
+import math
 
 EROR = 'eror'
 EPSILON  = 0.0001
@@ -57,23 +58,23 @@ def main():
     goal = sys.argv[2]
     file_path = sys.argv[3]
     matrix = process_txt(file_path)
-    vector_num = len(metrix)
+    vector_num = len(matrix)
     vector_size = len(matrix[0])
     #print_matrix(matrix)
     if goal == "symnmf":
         # this method should receive W and initial H as arguments and return the final H
-        W = symnmfapi.norm_py(matrix, vector_num, vector_size)
+        W = symnmfapi.norm(matrix, vector_num, vector_size)
         H = init_H(W,vector_num,k)
-        result = symnmfapi.symnmf_py(W,H,n,k,)  # this method should be defined in a C file
+        result = symnmfapi.symnmf(W,H,vector_num,k,MAX_ITER,EPSILON)  # this method should be defined in a C file
     elif goal == "sym":
         # this method should receive the data points matrix and return the similarity matrix
-        result = symnmfapi.sym_py(matrix, vector_num, vector_size)  # this method should be defined in a C file
+        result = symnmfapi.sym(matrix, vector_num, vector_size)  # this method should be defined in a C file
     elif goal == "ddg":
         # this method should receive the data points matrix and return the diagonal matrix D
-        result = symnmfapi.ddg_py(matrix, vector_num, vector_size) # this method should be defined in a C file
+        result = symnmfapi.ddg(matrix, vector_num, vector_size) # this method should be defined in a C file
     elif goal == "norm":
         # this method should receive the data points matrix and return the normalized similarity matrix
-        result = symnmfapi.norm_py(matrix, vector_num, vector_size)  # this method should be defined in a C file
+        result = symnmfapi.norm(matrix, vector_num, vector_size)  # this method should be defined in a C file
     else:
         result = None
     
