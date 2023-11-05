@@ -151,5 +151,7 @@ int main(int argc, char *argv[]) {
             exit(1);
     }
     print_matrix(res_mat, vectors_num, vectors_num);
+    delete_matrix(matrix);
+    delete_matrix(res_mat);
     return 0;
     }
